@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	
+	<display-name>credit</display-name>
+	
+	<!-- 启动欢迎页面的设置 -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- 加载所有的配置文件，包括数据库的 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:config/spring-*.xml</param-value>
+	</context-param>
+
+	<!-- 配置Spring监听 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 配置字符集 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- 配置Session -->
+	<filter>
+		<filter-name>openSession</filter-name>
+		<filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
+		<!-- 请注意，此处必须定义，否则后面会报错，具体是什么，笔者没截图，记不太清楚了 -->
+		<init-param>
+			<param-name>sessionFactoryBeanName</param-name>
+			<param-value>sessionFactory</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>openSession</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- 配置SpringMVC 指出具体springmvc的配置文件路径 其中的load-on-startup参数所指代的正数的值越小，该servlet的优先级越高，应用启动时就越先加载-->
+	<!-- “/” 是用来定义默认servlet映射的。也可以如“*.html”表示拦截所有以html为扩展名的请求 -->
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<description>加载目录下的所有XML作为Spring MVC的配置文件</description>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:config/spring-mvc.xml</param-value>
+
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 引用js,如果无此配置，则无法对js进行加载，尤其是JavaScript代码 -->
+	<!-- 
+		<servlet-mapping>
+			<servlet-name>default</servlet-name>
+			<url-pattern>*.js</url-pattern>
+		</servlet-mapping> 
+	-->
+</web-app>
